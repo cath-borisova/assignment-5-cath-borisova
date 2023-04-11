@@ -28,17 +28,25 @@ void main()
     // it with code that computes the vertex positions of the silhoutte outline.
     
     // First, you will need compute both the position and normal in view space.
-
+    vec4 viewPosition = (viewMatrix * vec4(worldPosition, 1));
+    vec4 viewNormal = normalize((viewMatrix * vec4(worldNormal, 0)));
+    
     // Next, you should set the z-component of the view space normal to zero
     // and then normalize it. This represents the direction outward from the
     // vertex in XY coordinates relative to the camera.
-    
+    viewNormal.z = 0.0;
+    viewNormal = normalize(viewNormal) * thickness;
+
     // The view space vertex position should then be translated in this direction
     // by correct distance, which is the thickness of the silhouette online.
-
+    viewPosition.x += viewNormal.x;
+    viewPosition.y += viewNormal.y;
     // Finally, you should project this position into screen coordinates and
     // assign it to the gl_Position variable, which will be passed to the 
     // fragment shader.
 
-    gl_Position = projectionMatrix * viewMatrix * vec4(worldPosition, 1);
+    // gl_Position = projectionMatrix * viewMatrix * vec4(worldPosition, 1);
+
+    gl_Position = projectionMatrix * viewPosition;
+
 }
